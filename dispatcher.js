@@ -2,7 +2,7 @@ const zmq = require('zmq')
 const { createStream } = require('./stream')
 
 const dispatcher = zmq.socket('push')
-dispatcher.bindSync('tcp://*:5000')
+dispatcher.bindSync('tcp://*:5016')
 
 const nameGeneratorStream = createStream()
 

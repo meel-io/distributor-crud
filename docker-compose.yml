@@ -1,0 +1,16 @@
+version: "2"
+services:
+  node:
+    image: "node:8"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+      - DISPATCHER_PORT=${DISPATCHERPORT:-5016}
+      - SINK_PORT=${SINKPORT:-5017}
+    volumes:
+      - ./:/home/node/app
+    expose:
+      - "${DISPATCHERPORT}"
+      - "${SINKPORT}" 
+    command: "npm start"

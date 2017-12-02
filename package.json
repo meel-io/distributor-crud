@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "chance": "^1.0.12",
+    "config": "^1.28.1",
     "sb-schema": "github:meel-io/sb-schema",
     "zmq": "^2.15.3"
   }
