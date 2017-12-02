@@ -1,6 +1,9 @@
 const zmq = require('zmq')
+
 const sink = zmq.socket('pull')
-sink.bindSync('tcp://*:5017')
+const port = process.env.SINK_PORT || 5017
+
+sink.bindSync(`tcp://*:${port}`)
 
 sink.on('message', buffer => {
   console.log('Message from worker: ', buffer.toString())

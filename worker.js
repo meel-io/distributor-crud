@@ -2,10 +2,17 @@ const zmq = require('zmq')
 const fromDispatcher = zmq.socket('pull')
 const toSink = zmq.socket('push')
 
-fromDispatcher.connect('tcp://localhost:5016')
-toSink.connect('tcp://localhost:5017')
+const dispatcherPort = process.env.DISPATCHER_PORT || 5016
+const sinkPort = process.env.SINK_PORT || 5017
+
+fromDispatcher.connect(`tcp://localhost:${dispatcherPort}`)
+toSink.connect(`tcp://localhost:${sinkPort}`)
 
 fromDispatcher.on('message', buffer => {
   const msg = JSON.parse(buffer)
-  console.log(msg)
+  insertOperationHere(msg)
 })
+
+const insertOperationHere = ({ rows }) => {
+  // ToDo: Change this for a CRUD op
+}
