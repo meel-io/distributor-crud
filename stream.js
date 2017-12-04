@@ -1,11 +1,20 @@
 const { Readable } = require('readable-stream')
-const Chance = require('chance')
-const nameGenerator = new Chance()
+const faker = require('faker')
 
-const createStream = () => {
+const createStream = (numberOfOps = 100) => {
   const rs = Readable({
     read: () => {
-      rs.push(Buffer.from(nameGenerator.name()))
+      rs.push(
+        Buffer.from(
+          JSON.stringify({
+            firstname: faker.name.firstName(),
+            lastname: faker.name.lastName()
+          })
+        )
+      )
+      if (--numberOfOps <= 0) {
+        rs.push(null)
+      }
     }
   })
 

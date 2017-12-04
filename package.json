@@ -18,8 +18,10 @@
     "eslint-plugin-standard": "^3.0.1"
   },
   "dependencies": {
-    "chance": "^1.0.12",
+    "chalk": "^2.3.0",
     "config": "^1.28.1",
+    "dotenv": "^4.0.0",
+    "faker": "^4.1.0",
     "sb-schema": "github:meel-io/sb-schema",
     "zmq": "^2.15.3"
   }

@@ -1,3 +1,4 @@
+const chalk = require('chalk')
 const zmq = require('zmq')
 const { createStream } = require('./stream')
 
@@ -22,3 +23,5 @@ nameGeneratorStream
   .on('end', () => {
     dispatcher.send(JSON.stringify({ rows: batch }))
   })
+
+console.log(chalk.greenBright(`Dispatcher started at port: ${port}`))
