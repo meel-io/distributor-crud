@@ -27,13 +27,16 @@ const run = async () => {
   toSink.connect(`tcp://localhost:${sinkPort}`)
 
   fromDispatcher.on('message', async data => {
-    const { rows } = JSON.parse(data)
-    rows.map(async data => {
-      const { firstname, lastname } = JSON.parse(data)
-      const user = await getPlayerRepository.create({ firstname, lastname }).catch(error => {
+    const { rows } = JSON.parse(data.toString())
+    rows.map(async row => {
+      /** ToDo: Parse nested buffer */
+      const { firstname, lastname } = JSON.parse(Buffer.from(row).toString())
+      const player = getPlayerRepository.create({ firstname, lastname })
+      await getPlayerRepository.save(player).catch(error => {
         throw error
       })
-      toSink.send(`Inserted: ${user.id}`)
+      console.log(chalk.greenBright(`Succesfully inserted: ${player.firstname} ${player.lastname}`))
+      toSink.send(`Inserted: ${player.id}`)
     })
   })
 }

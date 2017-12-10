@@ -24,4 +24,8 @@ nameGeneratorStream
     dispatcher.send(JSON.stringify({ rows: batch }))
   })
 
+dispatcher.on('accept', () => {
+  console.log(chalk.greenBright('Worker accepted'))
+})
+
 console.log(chalk.greenBright(`Dispatcher started at port: ${port}`))
