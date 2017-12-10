@@ -1,4 +1,5 @@
 require('dotenv').config()
+const chalk = require('chalk')
 const zmq = require('zmq')
 const { connect, Player } = require('sb-schema')
 
@@ -6,11 +7,11 @@ const run = async () => {
   const { DBHOST, DBPORT, DBNAME, DBUSERNAME, DBPASSWORD } = process.env
   const connection = await connect({
     type: 'postgres',
-    username: DBUSERNAME,
-    password: DBPASSWORD,
     host: DBHOST,
     port: DBPORT,
-    name: DBNAME
+    database: DBNAME,
+    username: DBUSERNAME,
+    password: DBPASSWORD
   }).catch(error => {
     throw error
   })
@@ -25,9 +26,16 @@ const run = async () => {
   fromDispatcher.connect(`tcp://localhost:${dispatcherPort}`)
   toSink.connect(`tcp://localhost:${sinkPort}`)
 
-  fromDispatcher.on('message', async buffer => {
-    const { firstname, lastname } = JSON.parse(buffer)
-    const user = await getPlayerRepository.create({ firstname, lastname })
-    toSink.send(`Inserted: ${user.id}`)
+  fromDispatcher.on('message', async data => {
+    const { rows } = JSON.parse(data)
+    rows.map(async data => {
+      const { firstname, lastname } = JSON.parse(data)
+      const user = await getPlayerRepository.create({ firstname, lastname }).catch(error => {
+        throw error
+      })
+      toSink.send(`Inserted: ${user.id}`)
+    })
   })
 }
+
+run()
