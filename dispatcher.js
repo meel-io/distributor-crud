@@ -4,10 +4,11 @@ const { createStream } = require('./stream')
 
 const dispatcher = zmq.socket('push')
 const port = process.env.DISPATCHER_PORT || 5016
+const numberOfPlayers = process.argv[2] || 100
 
 dispatcher.bindSync(`tcp://*:${port}`)
 
-const nameGeneratorStream = createStream()
+const nameGeneratorStream = createStream(numberOfPlayers)
 
 const batchSize = 10
 let batch = []

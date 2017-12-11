@@ -1,7 +1,7 @@
 const { Readable } = require('readable-stream')
 const faker = require('faker')
 
-const createStream = (numberOfOps = 100) => {
+const createStream = numberOfOps => {
   const rs = Readable({
     read: () => {
       rs.push(
