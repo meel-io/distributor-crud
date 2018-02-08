@@ -2,7 +2,7 @@
   "name": "ventilator",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "lint": "eslint src src/index.js",
     "precommit": "npm run lint",
