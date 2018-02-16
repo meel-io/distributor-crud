@@ -2,8 +2,11 @@
   "name": "ventilator",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.js",
   "scripts": {
+    "install": "npm run build",
+    "build": "tsc",
     "lint": "eslint src src/index.js",
     "precommit": "npm run lint",
     "test": "nyc mocha --reporter progress \"src/*.test.js\"",
@@ -12,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^9.4.6",
     "chai": "^4.1.2",
     "concurrently": "^3.5.1",
     "coveralls": "^3.0.0",
@@ -26,7 +30,8 @@
     "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^11.4.1",
     "sinon": "^4.2.2",
-    "streamtest": "^1.2.3"
+    "streamtest": "^1.2.3",
+    "typescript": "^2.7.2"
   },
   "dependencies": {
     "chalk": "^2.3.0",
