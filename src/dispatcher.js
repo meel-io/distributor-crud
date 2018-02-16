@@ -1,10 +1,8 @@
 const chalk = require('chalk')
-const zmq = require('zmq')
-
-const dispatcher = zmq.socket('push')
+const { bindSocket, mode } = require('./mqAdapter')
 
 const run = (stream, port, batchSize = 10) => {
-  dispatcher.bindSync(`tcp://*:${port}`)
+  const dispatcher = bindSocket(mode.push, port)
   let batch = []
 
   stream

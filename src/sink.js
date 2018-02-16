@@ -1,10 +1,8 @@
 const chalk = require('chalk')
-const zmq = require('zmq')
-
-const sink = zmq.socket('pull')
+const { bindSocket, mode } = require('mqAdapter')
 
 const run = port => {
-  sink.bindSync(`tcp://*:${port}`)
+  const sink = bindSocket(mode.pull, port)
 
   sink.on('message', buffer => {
     console.log('Message from worker: ', buffer.toString())

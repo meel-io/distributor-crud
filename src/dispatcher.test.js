@@ -1,11 +1,15 @@
 const sinon = require('sinon')
-const StreamTest = require('streamtest')
-const zmq = require('./zmqAdapter')
+const mq = require('./mqAdapter')
 
-const stub = sinon.stub(zmq, 'socket')
+const stub = sinon.stub(mq, 'bindSocket')
+
+const dispatcher = require('./dispatcher')
+const port = 5016
 
 describe('Test dispatcher', function () {
   describe('Test run', function () {
-    it('should ', function () {})
+    it('should ', function () {
+      dispatcher.run(StreamTest, port)
+    })
   })
 })
