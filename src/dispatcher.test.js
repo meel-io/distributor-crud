@@ -8,8 +8,6 @@ const port = 5016
 
 describe('Test dispatcher', function () {
   describe('Test run', function () {
-    it('should ', function () {
-      dispatcher.run(StreamTest, port)
-    })
+    it('should ', function () {})
   })
 })

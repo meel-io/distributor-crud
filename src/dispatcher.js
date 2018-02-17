@@ -1,8 +1,8 @@
 const chalk = require('chalk')
-const { bindSocket, mode } = require('./mqAdapter')
+const { bindSocket, Mode } = require('./mqAdapter')
 
 const run = (stream, port, batchSize = 10) => {
-  const dispatcher = bindSocket(mode.push, port)
+  const dispatcher = bindSocket(Mode.Push, port)
   let batch = []
 
   stream

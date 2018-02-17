@@ -1,23 +1,23 @@
 const zmq = require('zmq')
-const mode = {
-  push: 'push',
-  pull: 'pull'
+enum Mode {
+  Push,
+  Pull
 }
 
-const bindSocket = (mode, port) => {
+const bindSocket = (mode: Mode, port: number) => {
   const socket = getSocket(mode).bindSync(`tcp://*:${port}`)
 
   return socket
 }
 
-const connectSocket = (mode, port) => {
+const connectSocket = (mode: Mode, port: number) => {
   const socket = getSocket(mode).connect(`tcp://localhost:${port}`)
 
   return socket
 }
 
-const getSocket = mode => {
+const getSocket = (mode: Mode) => {
   return zmq.socket(mode)
 }
 
-module.exports = { bindSocket, connectSocket, mode }
+module.exports = { bindSocket, connectSocket, Mode }

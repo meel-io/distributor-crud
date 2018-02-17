@@ -9,7 +9,7 @@
     "build": "tsc",
     "lint": "eslint src src/index.js",
     "precommit": "npm run lint",
-    "test": "nyc mocha --reporter progress \"src/*.test.js\"",
+    "test": "nyc mocha --reporter progress \"lib/*.test.js\"",
     "cover": "npm test && nyc report --reporter=text-lcov | coveralls"
   },
   "author": "",

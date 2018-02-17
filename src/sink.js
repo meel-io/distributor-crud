@@ -1,8 +1,8 @@
 const chalk = require('chalk')
-const { bindSocket, mode } = require('mqAdapter')
+const { bindSocket, Mode } = require('mqAdapter')
 
 const run = port => {
-  const sink = bindSocket(mode.pull, port)
+  const sink = bindSocket(Mode.Pull, port)
 
   sink.on('message', buffer => {
     console.log('Message from worker: ', buffer.toString())
