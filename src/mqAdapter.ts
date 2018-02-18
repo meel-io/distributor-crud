@@ -1,4 +1,4 @@
-const zmq = require('zmq')
+import * as zmq from 'zmq'
 enum Mode {
   Push,
   Pull
@@ -20,4 +20,4 @@ const getSocket = (mode: Mode) => {
   return zmq.socket(mode)
 }
 
-module.exports = { bindSocket, connectSocket, Mode }
+export { bindSocket, connectSocket, Mode }
