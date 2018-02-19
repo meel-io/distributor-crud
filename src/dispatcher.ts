@@ -1,9 +1,11 @@
+import { Stream } from 'stream'
+
 const chalk = require('chalk')
 const { bindSocket, Mode } = require('./mqAdapter')
 
-const run = (stream, port, batchSize = 10) => {
+const run = (stream: Stream, port: number, batchSize = 10) => {
   const dispatcher = bindSocket(Mode.Push, port)
-  let batch = []
+  let batch: any[] = []
 
   stream
     .on('data', row => {
