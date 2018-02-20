@@ -7,7 +7,7 @@
   "scripts": {
     "install": "npm run build",
     "build": "tsc",
-    "lint": "eslint src src/index.js",
+    "lint": "tslint -p tsconfig.json -e src/*.test.ts",
     "precommit": "npm run lint",
     "test": "nyc mocha --reporter progress --require ts-node/register \"src/*.test.ts\"",
     "cover": "npm test && nyc report --reporter=text-lcov | coveralls"
@@ -35,6 +35,9 @@
     "sinon": "^4.2.2",
     "streamtest": "^1.2.3",
     "ts-node": "^5.0.0",
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.8.0",
+    "tslint-config-standard": "^7.0.0",
     "typescript": "^2.7.2"
   },
   "dependencies": {
