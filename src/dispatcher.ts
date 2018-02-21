@@ -3,7 +3,7 @@ import { Stream } from 'stream'
 const chalk = require('chalk')
 const { bindSocket, Mode } = require('./mqAdapter')
 
-const run = (stream: Stream, port: number, batchSize = 10) => {
+const run = (stream: Stream, port: number, batchSize: number = 10) => {
   const dispatcher = bindSocket(Mode.Push, port)
   let batch: any[] = []
 
@@ -26,4 +26,4 @@ const run = (stream: Stream, port: number, batchSize = 10) => {
   console.log(chalk.greenBright(`Dispatcher started at port: ${port}`))
 }
 
-module.exports = { run }
+export { run }
