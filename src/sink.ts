@@ -1,14 +1,14 @@
-import chalk from 'chalk'
+import { Logger } from './logger'
 import { bindSocket, Mode } from './mqAdapter'
 
-const run = (port: number) => {
+const run = (port: number, logger: Logger) => {
   const sink = bindSocket(Mode.Pull, port)
 
   sink.on('message', (buffer: Buffer) => {
-    console.log('Message from worker: ', buffer.toString())
+    logger.info(`Message from worker:  ${buffer.toString()}`)
   })
 
-  console.log(chalk.greenBright(`Sink started at port: ${port}`))
+  logger.info(`Sink started at port: ${port}`)
 }
 
 export { run }

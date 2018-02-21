@@ -1,9 +1,8 @@
 import { Stream } from 'stream'
+import { Logger } from './logger'
+import { bindSocket, Mode } from './mqAdapter'
 
-const chalk = require('chalk')
-const { bindSocket, Mode } = require('./mqAdapter')
-
-const run = (stream: Stream, port: number, batchSize: number = 10) => {
+const run = (stream: Stream, port: number, batchSize: number = 10, logger: Logger) => {
   const dispatcher = bindSocket(Mode.Push, port)
   let batch: any[] = []
 
@@ -20,10 +19,10 @@ const run = (stream: Stream, port: number, batchSize: number = 10) => {
     })
 
   dispatcher.on('accept', () => {
-    console.log(chalk.greenBright('Worker accepted'))
+    logger.info('Worker accepted')
   })
 
-  console.log(chalk.greenBright(`Dispatcher started at port: ${port}`))
+  logger.info(`Dispatcher started at port: ${port}`)
 }
 
 export { run }

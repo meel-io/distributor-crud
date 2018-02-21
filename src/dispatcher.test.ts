@@ -1,8 +1,8 @@
-import {} from 'mocha'
 import * as sinon from 'sinon'
-import * as mq from './mqAdapter'
 import { Stream } from 'stream'
 import { run } from './dispatcher'
+import { Logger } from './logger'
+import * as mq from './mqAdapter'
 
 const dispatcherSocket = {
   on: sinon.spy(),
@@ -14,13 +14,16 @@ const stream: Stream = new Stream()
 
 bindSocket.returns(dispatcherSocket)
 
+const logger = new Logger()
+const info = sinon.stub(logger, 'info')
+
 const port = 5016
 const batchSize = 10
 
-describe('Test dispatcher', function() {
-  describe('Test run', function() {
-    it('should ', function() {
-      run(stream, port, batchSize)
+describe('Test dispatcher', () => {
+  describe('Test run', () => {
+    it('should ', () => {
+      run(stream, port, batchSize, logger)
       bindSocket.restore()
     })
   })

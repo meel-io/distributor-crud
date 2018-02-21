@@ -1,7 +1,7 @@
 import * as zmq from 'zmq'
 enum Mode {
   Push = 'push',
-  Pull = 'pull'
+  Pull = 'pull',
 }
 
 const bindSocket = (mode: Mode, port: number) => {
@@ -20,4 +20,4 @@ const getSocket = (mode: Mode) => {
   return zmq.socket(mode)
 }
 
-export { bindSocket, connectSocket, Mode }
+export { bindSocket, connectSocket, getSocket, Mode }

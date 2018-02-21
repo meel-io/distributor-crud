@@ -1,8 +1,6 @@
 {
-  "extends": ["tslint:latest"],
+  "extends": ["tslint:latest", "tslint-config-prettier"],
   "rules": {
-    "no-console": false,
-    "semicolon": false,
-    "quotemark": [true, "single"]
+    "no-implicit-dependencies": [true, "dev"]
   }
 }
