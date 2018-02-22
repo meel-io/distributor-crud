@@ -1,30 +1,41 @@
 import * as sinon from 'sinon'
-import { Stream } from 'stream'
-import { run } from './dispatcher'
+import { Batch, Dispatcher } from './dispatcher'
 import { Logger } from './logger'
-import * as mq from './mqAdapter'
 
-const dispatcherSocket = {
-  on: sinon.spy(),
-  send: sinon.spy()
+const batchSize = 5
+const port = 5000
+const row = {
+  prop1: 'value1',
+  prop2: 'value2'
 }
 
-const bindSocket = sinon.stub(mq, 'bindSocket')
-const stream: Stream = new Stream()
-
-bindSocket.returns(dispatcherSocket)
-
-const logger = new Logger()
-const info = sinon.stub(logger, 'info')
-
-const port = 5016
-const batchSize = 10
-
 describe('Test dispatcher', () => {
-  describe('Test run', () => {
-    it('should ', () => {
-      run(stream, port, batchSize, logger)
-      bindSocket.restore()
+  describe('Test process', () => {
+    it('should not send if batch is not full', () => {
+      const push = sinon.stub(Batch.prototype, 'push').withArgs(row)
+      const full = sinon.stub(Batch.prototype, 'full').returns(false)
+      const clear = sinon.spy(Batch.prototype, 'clear')
+      const batch = new Batch(batchSize)
+
+      full.returns(false)
+
+      const logger = new Logger()
+      const info = sinon.stub(logger, 'info')
+
+      const send = sinon.stub(Dispatcher.prototype, 'send')
+      const dispatcher = new Dispatcher(port, batchSize, logger)
+
+      dispatcher.process(row)
+
+      sinon.assert.calledOnce(push)
+      sinon.assert.calledOnce(full)
+      sinon.assert.notCalled(clear)
+      sinon.assert.notCalled(send)
+
+      push.resetBehavior()
+      full.resetBehavior()
+      send.resetBehavior()
+      info.resetBehavior()
     })
   })
 })

@@ -1,23 +1,19 @@
-import * as zmq from 'zmq'
+import { socket, Socket } from 'zmq'
 enum Mode {
   Push = 'push',
-  Pull = 'pull',
+  Pull = 'pull'
 }
 
 const bindSocket = (mode: Mode, port: number) => {
-  const socket = getSocket(mode).bindSync(`tcp://*:${port}`)
-
-  return socket
+  return getSocket(mode).bindSync(`tcp://*:${port}`)
 }
 
 const connectSocket = (mode: Mode, port: number) => {
-  const socket = getSocket(mode).connect(`tcp://localhost:${port}`)
-
-  return socket
+  return getSocket(mode).connect(`tcp://localhost:${port}`)
 }
 
 const getSocket = (mode: Mode) => {
-  return zmq.socket(mode)
+  return socket(mode)
 }
 
-export { bindSocket, connectSocket, getSocket, Mode }
+export { bindSocket, connectSocket, getSocket, Mode, Socket }
