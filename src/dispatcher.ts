@@ -32,7 +32,7 @@ export class Dispatcher {
   constructor(port: number, batchSize: number = 10, logger: Logger) {
     this.batch = new Batch(batchSize)
     this.socket = bindSocket(Mode.Push, port)
-    this.logger = logger || new Logger()
+    this.logger = logger
 
     this.logger.info(`Dispatcher started at port: ${port}`)
   }

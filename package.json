@@ -9,7 +9,7 @@
     "build": "tsc",
     "lint": "tslint -p tsconfig.json -e src/*.test.ts",
     "precommit": "npm run lint",
-    "test": "nyc mocha --reporter progress --require ts-node/register \"src/*.test.ts\"",
+    "test": "npm run build && nyc mocha --reporter progress \"lib/*.test.js\"",
     "cover": "npm test && nyc report --reporter=text-lcov | coveralls"
   },
   "author": "",
