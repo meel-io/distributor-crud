@@ -2,6 +2,7 @@ import { Stream } from 'stream'
 import { Logger } from './logger'
 import { bindSocket, Mode, Socket } from './mqAdapter'
 
+/* istanbul ignore next */
 export class Batch {
   public rows: any
   public size: number
@@ -29,6 +30,7 @@ export class Dispatcher {
   public socket: Socket
   public logger: Logger
 
+  /* istanbul ignore next */
   constructor(port: number, batchSize: number = 10, logger: Logger) {
     this.batch = new Batch(batchSize)
     this.socket = bindSocket(Mode.Push, port)
