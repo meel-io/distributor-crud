@@ -1,6 +1,6 @@
-import * as dispatcher from './dispatcher'
+import { Dispatcher } from './dispatcher'
 import { Logger } from './logger'
-import * as sink from './sink'
-import * as worker from './worker'
+import { Sink } from './sink'
+import { Worker } from './worker'
 
-export { dispatcher, sink, worker, Logger }
+export { Dispatcher, Sink, Worker, Logger }

@@ -1,14 +1,21 @@
 import { Logger } from './logger'
-import { bindSocket, Mode } from './mqAdapter'
+import { bindSocket, Mode, Socket } from './mqAdapter'
 
-const run = (port: number, logger: Logger) => {
-  const sink = bindSocket(Mode.Pull, port)
+export class Sink {
+  public socket: Socket
+  public logger: Logger
 
-  sink.on('message', (buffer: Buffer) => {
-    logger.info(`Message from worker:  ${buffer.toString()}`)
-  })
+  /* istanbul ignore next */
+  constructor(port: number, logger: Logger) {
+    this.socket = bindSocket(Mode.Push, port)
+    this.logger = logger
 
-  logger.info(`Sink started at port: ${port}`)
+    this.logger.info(`Sink started at port: ${port}`)
+  }
+
+  public run() {
+    this.socket.on('message', (buffer: Buffer) => {
+      this.logger.info(`Message from worker:  ${buffer.toString()}`)
+    })
+  }
 }
-
-export { run }
