@@ -6,7 +6,7 @@
   "types": "lib/index.js",
   "scripts": {
     "install": "npm run build",
-    "build": "tsc",
+    "build": "tsc --declaration",
     "lint": "tslint -p tsconfig.json -e src/*.test.ts",
     "precommit": "npm run lint",
     "test": "npm run build && nyc mocha --reporter progress \"lib/*.test.js\"",

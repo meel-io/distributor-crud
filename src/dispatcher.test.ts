@@ -59,7 +59,7 @@ describe('Test dispatcher', () => {
       const batch = new Batch(batchSize)
       const logger = new Logger()
 
-      const dispatcher = new Dispatcher(port, batchSize, logger)
+      const dispatcher = new Dispatcher(port, logger, batchSize)
       dispatcher.process(row)
 
       sinon.assert.calledOnce(push)
@@ -79,7 +79,7 @@ describe('Test dispatcher', () => {
       const batch = new Batch(batchSize)
       const logger = new Logger()
 
-      const dispatcher = new Dispatcher(port, batchSize, logger)
+      const dispatcher = new Dispatcher(port, logger, batchSize)
       dispatcher.process(row)
 
       sinon.assert.calledOnce(push)
@@ -119,7 +119,7 @@ describe('Test dispatcher', () => {
       const socket = { on: sinon.stub() }
       bindSocket.returns(socket)
 
-      const dispatcher = new Dispatcher(port, batchSize, logger)
+      const dispatcher = new Dispatcher(port, logger, batchSize)
       const stream = streamStub as Stream
       dispatcher.run(stream)
 

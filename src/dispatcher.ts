@@ -26,12 +26,12 @@ export class Batch {
 }
 
 export class Dispatcher {
-  public batch: Batch
-  public socket: Socket
-  public logger: Logger
+  private batch: Batch
+  private socket: Socket
+  private logger: Logger
 
   /* istanbul ignore next */
-  constructor(port: number, batchSize: number = 10, logger: Logger) {
+  constructor(port: number, logger: Logger, batchSize: number = 10) {
     this.batch = new Batch(batchSize)
     this.socket = bindSocket(Mode.Push, port)
     this.logger = logger
