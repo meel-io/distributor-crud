@@ -40,8 +40,8 @@ export class Dispatcher {
   }
 
   public run(stream: Stream) {
-    stream.on('data', this.process)
-    stream.on('end', this.send)
+    stream.on('data', data => this.process(data))
+    stream.on('end', () => this.send())
 
     this.socket.on('accept', () => {
       this.logger.info('Worker accepted')
