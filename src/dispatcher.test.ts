@@ -6,10 +6,7 @@ import * as mqAdapter from './mqAdapter'
 
 const batchSize = 5
 const port = 5016
-const row = {
-  prop1: 'value1',
-  prop2: 'value2'
-}
+const row = Buffer.from('stringOfValues', 'utf8')
 
 describe('Test dispatcher', () => {
   const BatchPrototype: Batch = Batch.prototype
@@ -123,8 +120,8 @@ describe('Test dispatcher', () => {
       const stream = streamStub as Stream
       dispatcher.run(stream)
 
-      sinon.assert.calledWith(stream.on as sinon.SinonStub, 'data', process)
-      sinon.assert.calledWith(stream.on as sinon.SinonStub, 'end', send)
+      sinon.assert.calledWith(stream.on as sinon.SinonStub, 'data')
+      sinon.assert.calledWith(stream.on as sinon.SinonStub, 'end')
       sinon.assert.calledWith(socket.on as sinon.SinonStub, 'accept')
     })
   })
