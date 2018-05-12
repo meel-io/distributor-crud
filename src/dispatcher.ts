@@ -12,8 +12,8 @@ export class Batch {
     this.rows = []
   }
 
-  public push(row: any): void {
-    this.rows.push(row)
+  public push(row: Buffer): void {
+    this.rows.push(row.toString('utf8'))
   }
 
   public full(): boolean {
@@ -48,7 +48,7 @@ export class Dispatcher {
     })
   }
 
-  public process(row: any) {
+  public process(row: Buffer) {
     this.batch.push(row)
     if (this.batch.full()) {
       this.send()
