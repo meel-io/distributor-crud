@@ -2,7 +2,7 @@ import { Logger } from './logger'
 import { getSocket, Mode } from './mqAdapter'
 
 export class Worker {
-  public job: (row: any[]) => void
+  public job: (row: any[], logger: Logger) => void
   public logger: Logger
 
   /* istanbul ignore next */
@@ -23,7 +23,7 @@ export class Worker {
     fromDispatcher.on('message', async (data: any) => {
       const { rows } = JSON.parse(data.toString())
       rows.map(async (row: any[]) => {
-        await this.job(row)
+        await this.job(row, this.logger)
         toSink.send(`row Processed`)
       })
     })
