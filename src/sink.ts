@@ -7,7 +7,7 @@ export class Sink {
 
   /* istanbul ignore next */
   constructor(port: number, logger: Logger) {
-    this.socket = bindSocket(Mode.Push, port)
+    this.socket = bindSocket(Mode.Pull, port)
     this.logger = logger
 
     this.logger.info(`Sink started at port: ${port}`)

@@ -1,5 +1,5 @@
 {
-  "name": "ventilator",
+  "name": "largitor",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
@@ -12,7 +12,11 @@
     "test": "npm run build && nyc mocha --reporter progress \"lib/*.test.js\"",
     "cover": "npm test && nyc report --reporter=text-lcov | coveralls"
   },
-  "author": "",
+  "author": "meel-io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meel-io/largitor"
+  },
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.1.2",
