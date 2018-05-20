@@ -1,8 +1,7 @@
+import { Channel, connect } from 'amqplib'
 import { Stream } from 'stream'
 import { Logger } from './logger'
-import { bindSocket, Mode, Socket } from './mqAdapter'
 
-/* istanbul ignore next */
 export class Batch {
   public rows: any
   public size: number
@@ -13,7 +12,7 @@ export class Batch {
   }
 
   public push(row: Buffer): void {
-    this.rows.push(row.toString('utf8'))
+    this.rows.push(row)
   }
 
   public full(): boolean {
@@ -27,36 +26,38 @@ export class Batch {
 
 export class Dispatcher {
   private batch: Batch
-  private socket: Socket
+  private queue: string
   private logger: Logger
 
   /* istanbul ignore next */
-  constructor(port: number, logger: Logger, batchSize: number = 10) {
+  constructor(queue: string, logger: Logger, batchSize: number = 10) {
     this.batch = new Batch(batchSize)
-    this.socket = bindSocket(Mode.Push, port)
+    this.queue = queue
     this.logger = logger
 
-    this.logger.info(`Dispatcher started at port: ${port}`)
+    this.logger.info(`Dispatcher will use queue: ${queue}`)
   }
 
-  public run(stream: Stream) {
-    stream.on('data', data => this.process(data))
-    stream.on('end', () => this.send())
+  public async run(stream: Stream) {
+    const connection = await connect('amqp://localhost')
+    const channel = await connection.createChannel()
 
-    this.socket.on('accept', () => {
-      this.logger.info('Worker accepted')
-    })
+    stream.on('data', data => this.process(channel, data))
+    stream.on('end', () => this.send(channel))
   }
 
-  public process(row: Buffer) {
+  public process(channel: Channel, row: Buffer) {
     this.batch.push(row)
     if (this.batch.full()) {
-      this.send()
+      this.send(channel)
       this.batch.clear()
     }
   }
 
-  public send() {
-    this.socket.send(JSON.stringify({ rows: this.batch.rows }))
+  public send(channel: Channel) {
+    channel.sendToQueue(
+      this.queue,
+      new Buffer(JSON.stringify({ rows: this.batch.rows }))
+    )
   }
 }
