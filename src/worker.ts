@@ -1,5 +1,5 @@
+import { connect } from 'amqplib'
 import { Logger } from './logger'
-import { getSocket, Mode } from './mqAdapter'
 
 export class Worker {
   public job: (row: any[], logger: Logger) => void
@@ -10,22 +10,25 @@ export class Worker {
     this.job = job
     this.logger = logger
 
-    this.logger.info(`Work started at port`)
+    this.logger.info(`Worker started`)
   }
 
-  public async run(dispatcherPort: number, sinkPort: number) {
-    const fromDispatcher = getSocket(Mode.Pull)
-    const toSink = getSocket(Mode.Push)
+  public async run(dispatcherQueue: string, sinkQueue: string) {
+    const connection = await connect('amqp://localhost')
+    const channel = await connection.createChannel()
+    const assertedQueue = await channel.assertQueue(dispatcherQueue)
 
-    fromDispatcher.connect(`tcp://localhost:${dispatcherPort}`)
-    toSink.connect(`tcp://localhost:${sinkPort}`)
-
-    fromDispatcher.on('message', async (data: any) => {
-      const { rows } = JSON.parse(data.toString())
-      rows.map(async (row: any[]) => {
-        await this.job(row, this.logger)
-        toSink.send(`row Processed`)
-      })
+    channel.consume(assertedQueue.queue, async data => {
+      if (data) {
+        const { rows } = JSON.parse(data.toString())
+        rows.map(async (row: any[]) => {
+          const result = await this.job(row, this.logger)
+          channel.sendToQueue(
+            sinkQueue,
+            new Buffer(`Result sent by worker: ${result}`)
+          )
+        })
+      }
     })
   }
 }
