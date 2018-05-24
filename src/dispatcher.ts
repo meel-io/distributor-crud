@@ -1,46 +1,33 @@
-import { Channel, connect } from 'amqplib'
-import { Stream } from 'stream'
+import { Batch } from './batch'
 import { Logger } from './logger'
+import { MqAdapter } from './mqAdapter'
 
-export class Batch {
-  public rows: any
-  public size: number
-
-  constructor(batchSize = 10) {
-    this.size = batchSize
-    this.rows = []
-  }
-
-  public push(row: Buffer): void {
-    this.rows.push(row)
-  }
-
-  public full(): boolean {
-    return this.rows.length === this.size
-  }
-
-  public clear(): void {
-    this.rows = []
-  }
-}
+import { Channel } from 'amqplib'
+import { Stream } from 'stream'
 
 export class Dispatcher {
-  private batch: Batch
+  private mqAdapter: MqAdapter
   private queue: string
   private logger: Logger
+  private batch: Batch
 
   /* istanbul ignore next */
-  constructor(queue: string, logger: Logger, batchSize: number = 10) {
-    this.batch = new Batch(batchSize)
+  constructor(
+    mqHost: string,
+    queue: string,
+    logger: Logger,
+    batchSize: number = 10
+  ) {
+    this.mqAdapter = new MqAdapter(mqHost)
     this.queue = queue
     this.logger = logger
+    this.batch = new Batch(batchSize)
 
     this.logger.info(`Dispatcher will use queue: ${queue}`)
   }
 
   public async run(stream: Stream) {
-    const connection = await connect('amqp://localhost')
-    const channel = await connection.createChannel()
+    const channel = await this.mqAdapter.connect()
 
     stream.on('data', data => this.process(channel, data))
     stream.on('end', () => this.send(channel))

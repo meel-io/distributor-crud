@@ -1,12 +1,15 @@
 import { connect } from 'amqplib'
 import { Logger } from './logger'
+import { MqAdapter } from './mqAdapter'
 
 export class Worker {
+  public mqAdapter: MqAdapter
   public job: (row: any[], logger: Logger) => void
   public logger: Logger
 
   /* istanbul ignore next */
-  constructor(job: (row: any[]) => void, logger: Logger) {
+  constructor(mqHost: string, job: (row: any[]) => void, logger: Logger) {
+    this.mqAdapter = new MqAdapter(mqHost)
     this.job = job
     this.logger = logger
 
@@ -14,8 +17,7 @@ export class Worker {
   }
 
   public async run(dispatcherQueue: string, sinkQueue: string) {
-    const connection = await connect('amqp://localhost')
-    const channel = await connection.createChannel()
+    const channel = await this.mqAdapter.connect()
     const assertedQueue = await channel.assertQueue(dispatcherQueue)
 
     channel.consume(assertedQueue.queue, async data => {

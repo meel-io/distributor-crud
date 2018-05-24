@@ -1,12 +1,17 @@
-import { connect, Message } from 'amqplib'
+import { Batch } from './batch'
 import { Logger } from './logger'
+import { MqAdapter } from './mqAdapter'
+
+import { Message } from 'amqplib'
 
 export class Sink {
+  public mqAdapter: MqAdapter
   public queue: string
   public logger: Logger
 
   /* istanbul ignore next */
-  constructor(queue: string, logger: Logger) {
+  constructor(mqHost: string, queue: string, logger: Logger) {
+    this.mqAdapter = new MqAdapter(mqHost)
     this.queue = queue
     this.logger = logger
 
@@ -15,8 +20,7 @@ export class Sink {
 
   public async run() {
     try {
-      const connection = await connect('amqp://localhost')
-      const channel = await connection.createChannel()
+      const channel = await this.mqAdapter.connect()
       const assertedQueue = await channel.assertQueue(this.queue)
 
       channel.consume(assertedQueue.queue, msg => {
