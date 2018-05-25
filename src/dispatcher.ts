@@ -2,7 +2,6 @@ import { Batch } from './batch'
 import { Logger } from './logger'
 import { MqAdapter } from './mqAdapter'
 
-import { Channel } from 'amqplib'
 import { Stream } from 'stream'
 
 export class Dispatcher {
@@ -27,22 +26,25 @@ export class Dispatcher {
   }
 
   public async run(stream: Stream) {
-    const channel = await this.mqAdapter.connect()
-
-    stream.on('data', data => this.process(channel, data))
-    stream.on('end', () => this.send(channel))
+    try {
+      await this.mqAdapter.connect()
+      stream.on('data', data => this.process(data))
+      stream.on('end', () => this.send())
+    } catch (error) {
+      throw error
+    }
   }
 
-  public process(channel: Channel, row: Buffer) {
+  public process(row: Buffer) {
     this.batch.push(row)
     if (this.batch.full()) {
-      this.send(channel)
+      this.send()
       this.batch.clear()
     }
   }
 
-  public send(channel: Channel) {
-    channel.sendToQueue(
+  public send() {
+    this.mqAdapter.send(
       this.queue,
       new Buffer(JSON.stringify({ rows: this.batch.rows }))
     )

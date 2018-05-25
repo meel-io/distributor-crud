@@ -20,16 +20,14 @@ export class Sink {
 
   public async run() {
     try {
-      const channel = await this.mqAdapter.connect()
-      const assertedQueue = await channel.assertQueue(this.queue)
-
-      channel.consume(assertedQueue.queue, msg => {
+      await this.mqAdapter.connect()
+      this.mqAdapter.consume(this.queue, msg => {
         if (msg) {
           this.logger.info(`Message from worker:  ${msg.content.toString()}`)
         }
       })
     } catch (error) {
-      this.logger.error(`Error asserting sink queue:  ${error}`)
+      throw error
     }
   }
 }

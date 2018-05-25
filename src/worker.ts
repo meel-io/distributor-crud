@@ -1,4 +1,4 @@
-import { connect } from 'amqplib'
+import { connect, Message } from 'amqplib'
 import { Logger } from './logger'
 import { MqAdapter } from './mqAdapter'
 
@@ -17,20 +17,26 @@ export class Worker {
   }
 
   public async run(dispatcherQueue: string, sinkQueue: string) {
-    const channel = await this.mqAdapter.connect()
-    const assertedQueue = await channel.assertQueue(dispatcherQueue)
+    try {
+      await this.mqAdapter.connect()
+      await this.mqAdapter.consume(dispatcherQueue, async data => {
+        this.handle(sinkQueue, data)
+      })
+    } catch (error) {
+      throw error
+    }
+  }
 
-    channel.consume(assertedQueue.queue, async data => {
-      if (data) {
-        const { rows } = JSON.parse(data.toString())
-        rows.map(async (row: any[]) => {
-          const result = await this.job(row, this.logger)
-          channel.sendToQueue(
-            sinkQueue,
-            new Buffer(`Result sent by worker: ${result}`)
-          )
-        })
-      }
-    })
+  private async handle(queue: string, data: Message | null) {
+    if (!data) {
+      return false
+    }
+    const { rows } = JSON.parse(data.content.toString())
+    rows.reduce(async (response: boolean, row: any[]) => {
+      const result = await this.job(row, this.logger)
+      this.mqAdapter.send(queue, new Buffer(`Result sent by worker: ${result}`))
+
+      return response
+    }, true)
   }
 }
