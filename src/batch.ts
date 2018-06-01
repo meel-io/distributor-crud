@@ -8,7 +8,9 @@ export class Batch {
   }
 
   public push(row: Buffer): void {
-    this.rows.push(row)
+    if (!this.full()) {
+      this.rows.push(row)
+    }
   }
 
   public full(): boolean {

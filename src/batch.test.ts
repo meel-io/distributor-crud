@@ -32,3 +32,21 @@ describe('Batch full method', () => {
     assert.isTrue(batch.full())
   })
 })
+
+describe('Batch push method', () => {
+  const batch = new Batch(BATCH_SIZE)
+
+  it('should add to collection if not full', () => {
+    batch.push(Buffer.from("There's a starman waiting in the sky"))
+    assert.lengthOf(batch.rows, 1)
+  })
+
+  it('should not add to collection if full', () => {
+    batch.push(Buffer.from("He'd like to come and meet us"))
+    batch.push(Buffer.from("But he thinks he'd blow our minds"))
+    batch.push(Buffer.from("There's a starman waiting in the sky"))
+    batch.push(Buffer.from("He's told us not to blow it"))
+    batch.push(Buffer.from("Cause he knows it's all worthwhile"))
+    assert.lengthOf(batch.rows, 5)
+  })
+})
