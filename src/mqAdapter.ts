@@ -3,7 +3,7 @@ import { Channel, connect, Message } from 'amqplib'
 export class MqAdapter {
   public mqHost: string
   public mqPort: number
-  private channel!: Channel
+  public channel?: Channel
 
   constructor(mqHost: string, mqPort: number = 5672) {
     this.mqHost = mqHost
@@ -20,10 +20,16 @@ export class MqAdapter {
   }
 
   public send(queue: string, data: Buffer) {
+    if (!this.channel) {
+      throw new Error('Error: Channel has not been created')
+    }
     return this.channel.sendToQueue(queue, data)
   }
 
   public async consume(queue: string, callback: (msg: Message | null) => void) {
+    if (!this.channel) {
+      throw new Error('Error: Channel has not been created')
+    }
     const assertedQueue = await this.channel.assertQueue(queue)
     this.channel.consume(assertedQueue.queue, callback)
   }
