@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": ["es6"],
     "types": ["mocha"],
     "sourceMap": true,
@@ -16,5 +16,6 @@
     "strictNullChecks": true,
     "outDir": "./lib"
   },
-  "exclude": ["src/*.test.ts", "lib"]
+  "include": ["src/*.ts"],
+  "exclude": ["node_modules", "src/*.test.ts"]
 }
