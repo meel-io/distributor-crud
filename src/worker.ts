@@ -1,4 +1,4 @@
-import { connect, Message } from 'amqplib'
+import { Message } from 'amqplib'
 import { Logger } from './logger'
 import { MqAdapter } from './mqAdapter'
 

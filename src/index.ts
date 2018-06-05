@@ -1,6 +1,5 @@
-import { Dispatcher } from './dispatcher'
-import { Logger } from './logger'
-import { Sink } from './sink'
-import { Worker } from './worker'
-
-export { Dispatcher, Sink, Worker, Logger }
+export { Dispatcher } from './dispatcher'
+export { Logger } from './logger'
+export { Sink } from './sink'
+export { Worker } from './worker'
+export { MqAdapter } from './mqAdapter'

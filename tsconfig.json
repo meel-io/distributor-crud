@@ -1,11 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
+    "lib": ["es6"],
+    "types": ["mocha"],
+    "sourceMap": true,
     "module": "commonjs",
-    "outDir": "./lib",
-    "declaration": true,
-    "lib": ["es2015"],
-    "strict": true
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": false,
+    "noResolve": false,
+    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "outDir": "./lib"
   },
   "exclude": ["src/*.test.ts", "lib"]
 }

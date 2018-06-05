@@ -1,8 +1,5 @@
-import { Batch } from './batch'
 import { Logger } from './logger'
 import { MqAdapter } from './mqAdapter'
-
-import { Message } from 'amqplib'
 
 export class Sink {
   public mqAdapter: MqAdapter
