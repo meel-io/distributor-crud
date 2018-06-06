@@ -2,20 +2,23 @@
   "compilerOptions": {
     "target": "es6",
     "lib": ["es6"],
-    "types": ["mocha"],
     "sourceMap": true,
     "module": "commonjs",
     "moduleResolution": "node",
+    "declaration": true,
+    "noFallthroughCasesInSwitch": true,
+    "stripInternal": true,
+    "pretty": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "suppressImplicitAnyIndexErrors": false,
     "noResolve": false,
     "noUnusedParameters": false,
-    "noUnusedLocals": true,
-    "strictNullChecks": true,
     "outDir": "./lib"
   },
   "include": ["src/*.ts"],
-  "exclude": ["node_modules", "src/*.test.ts"]
+  "exclude": ["src/*.test.ts"]
 }
