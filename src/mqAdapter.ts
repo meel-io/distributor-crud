@@ -15,20 +15,20 @@ export class MqAdapter {
       const connection = await connect(`amqp://${this.mqHost}`)
       this.channel = await connection.createChannel()
     } catch (error) {
-      throw new Error(`Error: Couldn't connect to MQ host ${error.message}`)
+      throw new Error(`Couldn't connect to MQ host ${error.message}`)
     }
   }
 
-  public send(queue: string, data: Buffer) {
+  public async send(queue: string, data: Buffer) {
     if (!this.channel) {
-      throw new Error('Error: Channel has not been created')
+      throw new Error('Channel has not been created')
     }
     return this.channel.sendToQueue(queue, data)
   }
 
   public async consume(queue: string, callback: (msg: Message | null) => void) {
     if (!this.channel) {
-      throw new Error('Error: Channel has not been created')
+      throw new Error('Channel has not been created')
     }
     const assertedQueue = await this.channel.assertQueue(queue)
     this.channel.consume(assertedQueue.queue, callback)
