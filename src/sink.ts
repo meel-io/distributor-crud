@@ -13,7 +13,7 @@ export class Sink {
   public async run(callback: (msg: Message | null) => void) {
     try {
       await this.mqAdapter.connect()
-      this.mqAdapter.consume(this.queue, msg => {
+      this.mqAdapter.consume(this.queue, (msg: Message | null) => {
         if (msg) {
           callback(msg)
         }
