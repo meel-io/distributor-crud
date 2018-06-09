@@ -1,5 +1,7 @@
 import { Channel, connect, Message } from 'amqplib'
 
+export { Message } from 'amqplib'
+
 export class MqAdapter {
   public mqHost: string
   public mqPort: number

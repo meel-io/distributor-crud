@@ -1,4 +1,4 @@
-import { MqAdapter } from '../src/mqAdapter'
+import { MqAdapter } from './mqAdapter'
 
 import * as amqplib from 'amqplib'
 

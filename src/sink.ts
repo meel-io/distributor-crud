@@ -1,26 +1,21 @@
-import { Logger } from './logger'
-import { MqAdapter } from './mqAdapter'
+import { Message, MqAdapter } from './mqAdapter'
 
 export class Sink {
   public mqAdapter: MqAdapter
   public queue: string
-  public logger: Logger
 
   /* istanbul ignore next */
-  constructor(mqHost: string, queue: string, logger: Logger) {
-    this.mqAdapter = new MqAdapter(mqHost)
+  constructor(mqHost: string, mqPort: number, queue: string) {
+    this.mqAdapter = new MqAdapter(mqHost, mqPort)
     this.queue = queue
-    this.logger = logger
-
-    this.logger.info(`Sink will consume queue: ${queue}`)
   }
 
-  public async run() {
+  public async run(callback: (msg: Message | null) => void) {
     try {
       await this.mqAdapter.connect()
       this.mqAdapter.consume(this.queue, msg => {
         if (msg) {
-          this.logger.info(`Message from worker:  ${msg.content.toString()}`)
+          callback(msg)
         }
       })
     } catch (error) {
