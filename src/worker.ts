@@ -3,18 +3,17 @@ import { MqAdapter } from './mqAdapter'
 
 export class Worker {
   public mqAdapter: MqAdapter
-  public job: (row: any[]) => void
+  public job: (row: string) => string
 
-  /* istanbul ignore next */
-  constructor(mqHost: string, job: (row: any[]) => void) {
-    this.mqAdapter = new MqAdapter(mqHost)
+  constructor(mqHost: string, mqPort: number, job: (row: string) => string) {
+    this.mqAdapter = new MqAdapter(mqHost, mqPort)
     this.job = job
   }
 
   public async run(dispatcherQueue: string, sinkQueue: string) {
     try {
       await this.mqAdapter.connect()
-      await this.mqAdapter.consume(dispatcherQueue, async data => {
+      return this.mqAdapter.consume(dispatcherQueue, async data => {
         this.handle(sinkQueue, data)
       })
     } catch (error) {
@@ -26,10 +25,11 @@ export class Worker {
     if (!data) {
       return false
     }
+
     const { rows } = JSON.parse(data.content.toString())
-    rows.reduce(async (response: boolean, row: any[]) => {
+    return rows.reduce(async (response: boolean, row: string) => {
       const result = await this.job(row)
-      this.mqAdapter.send(queue, new Buffer(`Result sent by worker: ${result}`))
+      this.mqAdapter.send(queue, new Buffer(result))
 
       return response
     }, true)
