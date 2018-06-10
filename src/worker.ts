@@ -1,19 +1,14 @@
 import { Message } from 'amqplib'
-import { Logger } from './logger'
 import { MqAdapter } from './mqAdapter'
 
 export class Worker {
   public mqAdapter: MqAdapter
-  public job: (row: any[], logger: Logger) => void
-  public logger: Logger
+  public job: (row: any[]) => void
 
   /* istanbul ignore next */
-  constructor(mqHost: string, job: (row: any[]) => void, logger: Logger) {
+  constructor(mqHost: string, job: (row: any[]) => void) {
     this.mqAdapter = new MqAdapter(mqHost)
     this.job = job
-    this.logger = logger
-
-    this.logger.info(`Worker started`)
   }
 
   public async run(dispatcherQueue: string, sinkQueue: string) {
@@ -33,7 +28,7 @@ export class Worker {
     }
     const { rows } = JSON.parse(data.content.toString())
     rows.reduce(async (response: boolean, row: any[]) => {
-      const result = await this.job(row, this.logger)
+      const result = await this.job(row)
       this.mqAdapter.send(queue, new Buffer(`Result sent by worker: ${result}`))
 
       return response

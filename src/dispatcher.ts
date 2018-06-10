@@ -1,5 +1,4 @@
 import { Batch } from './batch'
-import { Logger } from './logger'
 import { MqAdapter } from './mqAdapter'
 
 import { Stream } from 'stream'
@@ -7,22 +6,17 @@ import { Stream } from 'stream'
 export class Dispatcher {
   private mqAdapter: MqAdapter
   private queue: string
-  private logger: Logger
   private batch: Batch
 
-  /* istanbul ignore next */
   constructor(
     mqHost: string,
+    mqPort: number,
     queue: string,
-    logger: Logger,
     batchSize: number = 10
   ) {
-    this.mqAdapter = new MqAdapter(mqHost)
+    this.mqAdapter = new MqAdapter(mqHost, mqPort)
     this.queue = queue
-    this.logger = logger
     this.batch = new Batch(batchSize)
-
-    this.logger.info(`Dispatcher will use queue: ${queue}`)
   }
 
   public async run(stream: Stream) {

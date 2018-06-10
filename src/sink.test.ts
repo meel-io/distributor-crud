@@ -1,4 +1,3 @@
-import { MqAdapter } from './mqAdapter'
 import { Sink } from './sink'
 
 import * as chai from 'chai'
@@ -39,18 +38,16 @@ describe('Sink run method', () => {
     assert.isFalse(callback.called)
   })
 
-  it('should run a callback when receiving a message from worker', () => {
+  it('should run a callback when receiving a message from worker', async () => {
     const connectStub = sandbox.stub(sink.mqAdapter, 'connect')
     const consumeStub = sandbox.stub(sink.mqAdapter, 'consume')
 
     const callback = sandbox.spy()
 
     connectStub.resolves()
+    consumeStub.callsArgWith(1, { content: Buffer.from('Hello') })
 
-    consumeStub
-      .withArgs(QUEUE, msg => callback(msg))
-      .callsArgWith(1, { content: Buffer.from('Hello') })
-
-    assert.isFulfilled(Promise.resolve(sink.run(callback)))
+    await sink.run(callback)
+    assert.isTrue(callback.called)
   })
 })
