@@ -1,5 +1,4 @@
 export { Dispatcher } from './dispatcher'
-export { Logger } from './logger'
 export { Sink } from './sink'
 export { Worker } from './worker'
 export { MqAdapter } from './mqAdapter'
