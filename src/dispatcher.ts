@@ -1,7 +1,7 @@
 import { Batch } from './batch'
 import { MqAdapter } from './mqAdapter'
 
-import { Stream } from 'stream'
+import { Stream, Writable } from 'stream'
 
 export class Dispatcher {
   private mqAdapter: MqAdapter
@@ -19,11 +19,11 @@ export class Dispatcher {
     this.batch = new Batch(batchSize)
   }
 
-  public async run(stream: Stream) {
+  public async run(): Promise<Stream> {
     try {
       await this.mqAdapter.connect()
-      stream.on('data', data => this.process(data))
-      stream.on('end', () => this.send())
+
+      return this.getStream()
     } catch (error) {
       throw error
     }
@@ -42,5 +42,16 @@ export class Dispatcher {
       this.queue,
       new Buffer(JSON.stringify({ rows: this.batch.rows }))
     )
+  }
+
+  private getStream() {
+    const stream = new Writable({
+      write(chunk: Buffer, _: string, cb: (error?: string) => void) {
+        this.process(chunk)
+        cb()
+      }
+    })
+
+    return stream
   }
 }
