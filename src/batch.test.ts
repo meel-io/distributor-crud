@@ -1,7 +1,6 @@
 import { Batch } from './batch'
 
 import * as chai from 'chai'
-import * as mocha from 'mocha'
 
 const assert = chai.assert
 const BATCH_SIZE = 5

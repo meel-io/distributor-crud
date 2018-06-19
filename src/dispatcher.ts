@@ -29,15 +29,16 @@ export class Dispatcher {
     }
   }
 
-  public process(row: Buffer) {
-    this.batch.push(row)
+  private process(row: Buffer, encoding: string, cb: (error?: string) => void) {
+    this.batch.push(row, encoding)
     if (this.batch.full()) {
       this.send()
       this.batch.clear()
     }
+    cb()
   }
 
-  public send() {
+  private send() {
     this.mqAdapter.send(
       this.queue,
       new Buffer(JSON.stringify({ rows: this.batch.rows }))
@@ -45,13 +46,8 @@ export class Dispatcher {
   }
 
   private getStream() {
-    const stream = new Writable({
-      write(chunk: Buffer, _: string, cb: (error?: string) => void) {
-        this.process(chunk)
-        cb()
-      }
+    return new Writable({
+      write: (row: Buffer, encoding: string, cb: (error?: string) => void) => this.process(row, encoding, cb)
     })
-
-    return stream
   }
 }

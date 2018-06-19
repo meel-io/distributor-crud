@@ -7,9 +7,11 @@ export class Batch {
     this.rows = []
   }
 
-  public push(row: Buffer): void {
+  public push(row: Buffer, encoding?: string): void {
+
     if (!this.full()) {
-      this.rows.push(row)
+      const data = (encoding !== 'buffer' && encoding !== 'undefined') ? row.toString(encoding) : row
+      this.rows.push(data)
     }
   }
 
