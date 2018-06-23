@@ -1,6 +1,6 @@
 import { Dispatcher } from './dispatcher'
 
-import { Stream } from 'stream'
+import { Duplex } from 'stream'
 
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
@@ -48,12 +48,12 @@ describe('Dispatcher run method', () => {
     assert.isRejected(Promise.resolve(dispatcher.run()))
   })
 
-  it("should return a writable stream when can connect", () => {
+  it('should return a writable stream when can connect', () => {
     const connectStub = sandbox.stub(MqAdapter.prototype, 'connect')
 
     connectStub.resolves()
 
-    assert.eventually.instanceOf(dispatcher.run(), Stream)
+    assert.eventually.instanceOf(dispatcher.run(), Duplex)
   })
 
   it("should send a batch when it's full", async () => {
@@ -64,9 +64,11 @@ describe('Dispatcher run method', () => {
 
     const dispatcherStream = await dispatcher.run()
 
-    ROWS.reduce((_, row) => {
-      return dispatcherStream.write(row)
-    })
+    ROWS.reduce((result, row) => {
+      dispatcherStream.write(row)
+
+      return result
+    }, true)
 
     assert.isTrue(sinkSpy.called)
   })

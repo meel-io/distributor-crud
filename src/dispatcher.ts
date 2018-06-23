@@ -1,7 +1,7 @@
 import { Batch } from './batch'
 import { MqAdapter } from './mqAdapter'
 
-import { Duplex, Stream } from 'stream'
+import { Duplex } from 'stream'
 
 export class Dispatcher {
   private mqAdapter: MqAdapter
@@ -19,7 +19,7 @@ export class Dispatcher {
     this.batch = new Batch(batchSize)
   }
 
-  public async run(): Promise<Stream> {
+  public async run(): Promise<Duplex> {
     try {
       await this.mqAdapter.connect()
 
@@ -48,7 +48,8 @@ export class Dispatcher {
   private getStream() {
     return new Duplex({
       read: () => this.batch.rows,
-      write: (row: Buffer, encoding: string, cb: (error?: string) => void) => this.process(row, encoding, cb)
+      write: (row: Buffer, encoding: string, cb: (error?: string) => void) =>
+        this.process(row, encoding, cb)
     })
   }
 }
