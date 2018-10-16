@@ -1,5 +1,5 @@
 import { Worker } from '../src'
-import { INPUT, MQ_HOST, MQ_PORT, OUTPUT, toUpperCase } from './simple'
+import { INPUT, MQ_HOST, MQ_PORT, OUTPUT, toUpperCase } from './'
 
 const run = () => {
   const worker = new Worker(MQ_HOST, MQ_PORT, toUpperCase)
@@ -7,4 +7,7 @@ const run = () => {
   worker.run(INPUT, OUTPUT)
 }
 
-run()
+process.on('message', () => {
+  run()
+  process.send(`Worker: ${process.pid} started`)
+})

@@ -1,5 +1,5 @@
 import { Sink } from '../src'
-import { INPUT, MQ_HOST, MQ_PORT } from './simple'
+import { INPUT, MQ_HOST, MQ_PORT } from './'
 
 const run = () => {
   const sink = new Sink(MQ_HOST, MQ_PORT, INPUT)
@@ -7,4 +7,7 @@ const run = () => {
   sink.run((msg: any) => msg)
 }
 
-run()
+process.on('message', () => {
+  run()
+  process.send(`Sink ${process.pid} started`)
+})

@@ -1,8 +1,13 @@
-export const MQ_HOST = 'localhost'
-export const MQ_PORT = 5672
-export const INPUT = 'INPUT'
-export const OUTPUT = 'OUTPUT'
+import { fork } from 'child_process'
+const WORKERS = 3
 
-type Job = (row: string) => any
+const generateWorkers = (numberOfWorkers: number) =>
+  Array.from({ length: numberOfWorkers }, () => fork('./worker'))
 
-export const toUpperCase = (row: string) => row.toUpperCase()
+const workers = generateWorkers(WORKERS)
+const dispatcher = fork('./dispatcher')
+const sink = fork('./sink')
+
+dispatcher.send('start')
+sink.send('start')
+workers.forEach(worker => worker.send('start'))
