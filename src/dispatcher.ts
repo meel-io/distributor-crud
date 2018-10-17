@@ -8,7 +8,7 @@ export class Dispatcher {
   private queue: string
   private batch: Batch
 
-  constructor(
+  constructor (
     mqHost: string,
     mqPort: number,
     queue: string,
@@ -19,7 +19,7 @@ export class Dispatcher {
     this.batch = new Batch(batchSize)
   }
 
-  public async run(): Promise<Duplex> {
+  public async run (): Promise<Duplex> {
     try {
       await this.mqAdapter.connect()
 
@@ -29,7 +29,7 @@ export class Dispatcher {
     }
   }
 
-  private process(row: Buffer, encoding: string, cb: (error?: string) => void) {
+  private process (row: Buffer, encoding: string, cb: (error?: string) => void) {
     this.batch.push(row, encoding)
     if (this.batch.full()) {
       this.send()
@@ -38,14 +38,14 @@ export class Dispatcher {
     cb()
   }
 
-  private send() {
+  private send () {
     this.mqAdapter.send(
       this.queue,
-      new Buffer(JSON.stringify({ rows: this.batch.rows }))
+      Buffer.from(JSON.stringify({ rows: this.batch.rows }))
     )
   }
 
-  private getStream() {
+  private getStream () {
     return new Duplex({
       read: () => this.batch.rows,
       write: (row: Buffer, encoding: string, cb: (error?: string) => void) =>
