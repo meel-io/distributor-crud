@@ -17,6 +17,6 @@
     "noUnusedParameters": true,
     "outDir": "./lib"
   },
-  "include": ["src/*.ts"],
+  "include": ["src/*.ts", "example/*.ts"],
   "exclude": ["src/*.test.ts"]
 }

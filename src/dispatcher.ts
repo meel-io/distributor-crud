@@ -19,11 +19,17 @@ export class Dispatcher {
     this.batch = new Batch(batchSize)
   }
 
-  public async run (): Promise<Duplex> {
+  public getStream () {
+    return new Duplex({
+      read: () => this.batch.rows,
+      write: (row: Buffer, encoding: string, cb: (error?: string) => void) =>
+        this.process(row, encoding, cb)
+    })
+  }
+
+  public async run (): Promise<void> {
     try {
       await this.mqAdapter.connect()
-
-      return this.getStream()
     } catch (error) {
       throw error
     }
@@ -43,13 +49,5 @@ export class Dispatcher {
       this.queue,
       Buffer.from(JSON.stringify({ rows: this.batch.rows }))
     )
-  }
-
-  private getStream () {
-    return new Duplex({
-      read: () => this.batch.rows,
-      write: (row: Buffer, encoding: string, cb: (error?: string) => void) =>
-        this.process(row, encoding, cb)
-    })
   }
 }

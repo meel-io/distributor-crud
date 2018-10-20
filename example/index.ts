@@ -5,4 +5,6 @@ export const OUTPUT = 'OUTPUT'
 
 type Job = (row: string) => any
 
-export const toUpperCase = (row: string) => row.toUpperCase()
+export const toUpperCase: Job = (row: string) => {
+  return row.toUpperCase()
+}
